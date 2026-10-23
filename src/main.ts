@@ -1,6 +1,7 @@
 import "./style.css";
 
 type StatKey = "health" | "money" | "san" | "relationships" | "happiness" | "career" | "lifespan";
+type Rarity = "common" | "uncommon" | "rare" | "legendary";
 type Effects = Partial<Record<StatKey, number>>;
 interface LifeEvent {
   title: string;
@@ -10,7 +11,7 @@ interface LifeEvent {
   minAge: number;
   maxAge: number;
   mood: "good" | "bad" | "neutral";
-  rarity?: number;
+  rarity: Rarity;
 }
 interface YearRecord extends LifeEvent {
   age: number;
@@ -63,67 +64,66 @@ function newLife(): LifeState {
     career:clamp(defaults.career+origin.effects.career,0,100)};
 }
 const events: LifeEvent[] = [
-  {title:"平安降生",category:"家庭",description:"你在家人的期待中来到这个世界。有人把你抱在怀里，轻轻哼着歌。",effects:{health:3,relationships:8,happiness:5},minAge:0,maxAge:1,mood:"good"},
-  {title:"第一次发烧",category:"健康",description:"夜里突然发起高烧，家人抱着你赶去医院。幸好及时治疗。",effects:{health:-8,money:-300,happiness:-2},minAge:0,maxAge:5,mood:"bad"},
-  {title:"学会走路",category:"成长",description:"你扶着桌沿摇摇晃晃地站起来，终于迈出了人生的第一步。",effects:{happiness:7,san:3},minAge:1,maxAge:3,mood:"good"},
-  {title:"家里的争吵",category:"家庭",description:"大人的争吵让家里的气氛变得紧张，你躲在房间里不敢出声。",effects:{san:-8,relationships:-5,happiness:-6},minAge:2,maxAge:17,mood:"bad"},
-  {title:"被温柔地照顾",category:"家庭",description:"有人记得你怕黑，睡前特地留了一盏小灯。小小的善意让你安心。",effects:{san:5,relationships:5,happiness:5},minAge:1,maxAge:12,mood:"good"},
-  {title:"平凡的一年",category:"日常",description:"没有大喜，也没有大悲。日子像窗外的云一样缓慢地飘过。",effects:{},minAge:0,maxAge:100,mood:"neutral"},
-  {title:"交到第一个朋友",category:"友情",description:"你们分享零食、秘密和无聊的笑话。原来有人一起玩，时间会过得很快。",effects:{relationships:10,happiness:8,san:4},minAge:4,maxAge:16,mood:"good"},
-  {title:"考试失利",category:"学习",description:"努力准备的考试没有得到理想结果。你怀疑自己是不是不够聪明。",effects:{san:-7,happiness:-5},minAge:6,maxAge:22,mood:"bad"},
-  {title:"发现喜欢的事",category:"成长",description:"你偶然接触到一件很喜欢的事，第一次愿意不看时间地投入其中。",effects:{happiness:10,san:5,career:2},minAge:6,maxAge:30,mood:"good"},
-  {title:"被同学排挤",category:"人际",description:"你被排除在一个小圈子之外。那些看似不起眼的话，在心里留了很久。",effects:{san:-12,relationships:-8,happiness:-8},minAge:7,maxAge:19,mood:"bad"},
-  {title:"家人带你出游",category:"家庭",description:"一家人去了陌生的地方。多年以后，你可能记不清风景，却记得当时的笑声。",effects:{relationships:8,happiness:10,money:-500},minAge:5,maxAge:18,mood:"good"},
-  {title:"遇到一位好老师",category:"学习",description:"老师认真听你说话，并告诉你：现在不会，不代表以后也不会。",effects:{san:8,career:4,happiness:5},minAge:6,maxAge:20,mood:"good"},
-  {title:"升学压力",category:"学习",description:"成绩、排名和未来压在一起。你开始把休息当成一种罪过。",effects:{san:-10,health:-3,happiness:-5},minAge:12,maxAge:23,mood:"bad"},
-  {title:"顺利毕业",category:"成长",description:"你完成了一个阶段的学习。前方仍然迷茫，但至少又多了一种选择。",effects:{career:5,happiness:8,san:4},minAge:16,maxAge:27,mood:"good"},
-  {title:"青春期的烦恼",category:"心理",description:"你开始在意别人怎么看自己，也常常不知道该怎样表达真实的想法。",effects:{san:-5,happiness:-3},minAge:12,maxAge:19,mood:"bad"},
-  {title:"第一次打工",category:"工作",description:"你用自己的劳动换来第一笔收入。钱不多，但拿在手里很踏实。",effects:{money:1800,career:3,happiness:4},minAge:15,maxAge:25,mood:"good"},
-  {title:"找到第一份工作",category:"工作",description:"你开始规律通勤、学习规矩，也慢慢明白职场并不总是讲道理。",effects:{money:4500,career:8,san:-3},minAge:18,maxAge:32,mood:"neutral"},
-  {title:"租房搬家",category:"生活",description:"你搬进一间属于自己的小房间。自由是真的，账单也是真的。",effects:{money:-2200,relationships:-2,happiness:5},minAge:18,maxAge:40,mood:"neutral"},
-  {title:"遇见心动的人",category:"爱情",description:"一次普通的相遇，让你开始期待手机亮起，也开始在意自己的样子。",effects:{relationships:8,happiness:12,san:5},minAge:16,maxAge:40,mood:"good"},
-  {title:"一段感情结束",category:"爱情",description:"你们最终没能走到一起。曾经认真爱过的东西离开时，还是会痛。",effects:{relationships:-10,san:-14,happiness:-12},minAge:17,maxAge:55,mood:"bad"},
-  {title:"升职加薪",category:"工作",description:"过去的努力终于被看见。收入提高了，责任和会议也一起增加。",effects:{money:7000,career:12,san:-4},minAge:23,maxAge:58,mood:"good"},
-  {title:"项目失败",category:"工作",description:"一个项目没能达到预期，你承担了压力，也学会了如何面对失误。",effects:{money:-1800,career:-4,san:-9},minAge:20,maxAge:60,mood:"bad"},
-  {title:"投资赚了一笔",category:"金钱",description:"你做过的研究恰好遇上好行情，资产有所增长。好运不代表每次都如此。",effects:{money:8500,happiness:6,san:2},minAge:20,maxAge:65,mood:"good"},
-  {title:"冲动消费",category:"金钱",description:"压力大的时候，你买了很多并不需要的东西。拆包裹时开心，月底却有些后悔。",effects:{money:-2600,happiness:3,san:-2},minAge:16,maxAge:70,mood:"neutral"},
-  {title:"熬夜成了习惯",category:"健康",description:"你总想着再做一点事，睡眠却一天天减少。身体暂时没抗议，不代表它没记账。",effects:{health:-10,san:-5,career:2},minAge:16,maxAge:55,mood:"bad"},
-  {title:"开始规律运动",category:"健康",description:"你决定从散步和拉伸开始。变化很慢，但睡眠和精神状态逐渐改善。",effects:{health:12,happiness:5,san:4},minAge:16,maxAge:80,mood:"good"},
-  {title:"认识一群挚友",category:"友情",description:"你们不一定常见面，但遇到难处时，总有人愿意听你把话说完。",effects:{relationships:14,san:8,happiness:8},minAge:18,maxAge:65,mood:"good"},
-  {title:"亲人需要照顾",category:"家庭",description:"家庭责任突然变重。你在担心、疲惫和爱之间，努力找出一点平衡。",effects:{money:-3500,health:-5,san:-8,relationships:5},minAge:25,maxAge:75,mood:"bad"},
-  {title:"迎来新生命",category:"家庭",description:"一个小生命加入了你的生活。快乐很具体，责任也从此变得具体。",effects:{relationships:12,happiness:12,money:-4000,san:-4},minAge:22,maxAge:48,mood:"good"},
-  {title:"房贷与账单",category:"金钱",description:"收入看起来不少，但房租、贷款和各种账单很快分走了它们。",effects:{money:-5000,san:-5,happiness:-3},minAge:25,maxAge:60,mood:"neutral"},
-  {title:"一次健康检查",category:"健康",description:"检查发现一些需要关注的小问题。医生建议你调整作息，别再透支身体。",effects:{health:5,money:-900,san:2},minAge:25,maxAge:85,mood:"neutral"},
-  {title:"得到意外之财",category:"金钱",description:"一笔意料之外的奖金或馈赠落到你手里。它缓解了压力，也给了你一点余裕。",effects:{money:6000,happiness:7},minAge:20,maxAge:80,mood:"good"},
-  {title:"工作倦怠",category:"心理",description:"每天都在忙，却说不清忙碌的意义。你需要休息，也需要重新想想自己想要什么。",effects:{san:-12,happiness:-8,health:-4},minAge:28,maxAge:65,mood:"bad"},
-  {title:"学会拒绝",category:"成长",description:"你终于不再答应所有人的要求。边界没有让你变得冷漠，反而让关系更诚实。",effects:{san:10,relationships:4,happiness:6},minAge:20,maxAge:70,mood:"good"},
-  {title:"事业迎来高峰",category:"工作",description:"你积累的经验开始发挥价值，拥有了更多选择，也有能力帮助别人。",effects:{money:12000,career:15,happiness:8},minAge:30,maxAge:62,mood:"good"},
-  {title:"一次意外受伤",category:"健康",description:"意外打乱了生活计划。治疗和休养花去不少时间，也提醒你生命并非理所当然。",effects:{health:-18,money:-2500,san:-6,lifespan:-1},minAge:10,maxAge:85,mood:"bad"},
-  {title:"久违的旅行",category:"生活",description:"你暂时离开熟悉的环境，看到不同的生活方式，心里重新有了空间。",effects:{money:-1800,happiness:12,san:8},minAge:18,maxAge:80,mood:"good"},
-  {title:"朋友渐行渐远",category:"人际",description:"生活把大家带往不同方向。没有争吵，只是联络越来越少。",effects:{relationships:-6,happiness:-4},minAge:25,maxAge:75,mood:"neutral"},
-  {title:"存下第一桶金",category:"金钱",description:"长期积累终于有了成果。你不再只担心下个月，也开始认真考虑未来。",effects:{money:10000,san:5,happiness:8},minAge:25,maxAge:65,mood:"good"},
-  {title:"经济环境变差",category:"金钱",description:"行业不景气，收入和资产都受到影响。你开始重新安排预算，学着留有余地。",effects:{money:-6500,san:-7,happiness:-5},minAge:20,maxAge:75,mood:"bad"},
-  {title:"孩子长大离家",category:"家庭",description:"家里忽然安静下来。你既为孩子高兴，也需要适应新的生活节奏。",effects:{relationships:-2,happiness:-3,san:2,money:1500},minAge:40,maxAge:75,mood:"neutral"},
-  {title:"重新拾起爱好",category:"生活",description:"你找回年轻时喜欢的事情，不为赚钱，也不为证明什么，只是单纯享受。",effects:{happiness:10,san:8,relationships:3},minAge:30,maxAge:90,mood:"good"},
-  {title:"退休了",category:"人生阶段",description:"工作日程终于空了下来。你需要重新定义每天的节奏，也拥有了更多自由。",effects:{career:-5,happiness:5,san:5,money:-1000},minAge:55,maxAge:75,mood:"neutral"},
-  {title:"慢性病困扰",category:"健康",description:"身体需要长期管理，生活方式也不得不改变。规律治疗让情况暂时稳定下来。",effects:{health:-14,money:-3200,san:-5,lifespan:-2},minAge:45,maxAge:95,mood:"bad"},
-  {title:"老友重逢",category:"友情",description:"多年未见的朋友坐在你对面，聊起往事时，仿佛那些年从未真正走远。",effects:{relationships:10,happiness:9,san:5},minAge:35,maxAge:95,mood:"good"},
-  {title:"享受平静的午后",category:"日常",description:"阳光落在窗边，你喝着热茶，没有急事，也没有必须证明的事。平凡本身就是礼物。",effects:{health:2,san:5,happiness:6},minAge:45,maxAge:100,mood:"good"},
-  {title:"失去重要的人",category:"离别",description:"你经历了一次沉重的告别。悲伤没有立刻消失，但你慢慢学着带着记忆继续生活。",effects:{relationships:-12,san:-12,happiness:-10},minAge:25,maxAge:100,mood:"bad"},
-  {title:"身体恢复得不错",category:"健康",description:"长期坚持的生活习惯开始回报你。体检结果令人安心，你也更珍惜身体发出的信号。",effects:{health:10,lifespan:1,happiness:4},minAge:35,maxAge:95,mood:"good"},
-  {title:"社区里帮了个忙",category:"人际",description:"你顺手帮邻居解决了一件小事。互相照应的感觉，让陌生的地方也有了人情味。",effects:{relationships:6,happiness:5,san:3},minAge:18,maxAge:100,mood:"good"},
-  {title:"什么也没发生",category:"日常",description:"这一年没有值得写进新闻的大事。你吃饭、睡觉、工作，日子安静地往前走。",effects:{},minAge:0,maxAge:100,mood:"neutral"}
-
-  {title:"彩票头奖",category:"极稀有",description:"你随手买的一张彩票竟然中了头奖。生活突然拥有了全新的选项，但如何使用这笔钱仍然是你的课题。",effects:{money:800000,happiness:20,san:8,relationships:4},minAge:18,maxAge:85,mood:"good",rarity:1},
-  {title:"一夜之间负债",category:"极稀有",description:"担保、骗局或错误的商业决定让你背上沉重债务。你必须重新建立生活的底线。",effects:{money:-50000,san:-18,happiness:-15,relationships:-8},minAge:20,maxAge:70,mood:"bad",rarity:1},
-  {title:"命运中的贵人",category:"奇迹",description:"一位重要人物看见了你的潜力，给你一个改变人生轨迹的机会。",effects:{career:25,money:18000,relationships:8,happiness:12},minAge:16,maxAge:55,mood:"good",rarity:2},
-  {title:"重大事故幸存",category:"奇迹",description:"一场本可能改变一切的事故发生了。你奇迹般活了下来，从此重新审视时间的价值。",effects:{health:-25,san:10,lifespan:3,happiness:5},minAge:12,maxAge:90,mood:"good",rarity:2},
-  {title:"被信任的人背叛",category:"暗潮",description:"你发现一个深信不疑的人一直在利用你。你失去了资源，也不得不重新学习信任。",effects:{money:-12000,san:-20,relationships:-20,happiness:-15},minAge:18,maxAge:75,mood:"bad",rarity:2},
-  {title:"作品意外爆红",category:"奇迹",description:"你做的一件事突然被很多人看见。机会和关注一同涌来，平静的生活从此改变。",effects:{money:35000,career:22,relationships:5,happiness:18},minAge:14,maxAge:60,mood:"good",rarity:2},
-  {title:"罕见的身心低谷",category:"暗潮",description:"连续的压力终于压垮了你。你需要暂停一些事，向可信任的人求助，而不是独自硬撑。",effects:{health:-15,san:-25,happiness:-18,lifespan:-2},minAge:18,maxAge:85,mood:"bad",rarity:2},
-  {title:"重返校园",category:"人生转折",description:"你决定重新学习一项技能或回到校园。虽然起步比别人晚，但人生并没有规定只能选择一次。",effects:{money:-6000,career:16,san:8,happiness:10},minAge:25,maxAge:65,mood:"good",rarity:3},
-  {title:"意外继承",category:"极稀有",description:"一位远亲留下了一笔遗产。它无法解决人生所有问题，却让你多了喘息的空间。",effects:{money:150000,relationships:3,san:6,happiness:15},minAge:18,maxAge:90,mood:"good",rarity:1},
-  {title:"人生目标彻底改变",category:"人生转折",description:"一次经历让你发现，过去追逐的东西并不是自己真正想要的。你选择重新开始。",effects:{career:-8,san:15,happiness:12,relationships:5},minAge:20,maxAge:75,mood:"good",rarity:3},
+  {title:"平安降生",category:"家庭",description:"你在家人的期待中来到这个世界。有人把你抱在怀里，轻轻哼着歌。",effects:{health:3,relationships:8,happiness:5},minAge:0,maxAge:1,mood:"good",rarity:"common"},
+  {title:"第一次发烧",category:"健康",description:"夜里突然发起高烧，家人抱着你赶去医院。幸好及时治疗。",effects:{health:-8,money:-300,happiness:-2},minAge:0,maxAge:5,mood:"bad",rarity:"uncommon"},
+  {title:"学会走路",category:"成长",description:"你扶着桌沿摇摇晃晃地站起来，终于迈出了人生的第一步。",effects:{happiness:7,san:3},minAge:1,maxAge:3,mood:"good",rarity:"common"},
+  {title:"家里的争吵",category:"家庭",description:"大人的争吵让家里的气氛变得紧张，你躲在房间里不敢出声。",effects:{san:-8,relationships:-5,happiness:-6},minAge:2,maxAge:17,mood:"bad",rarity:"uncommon"},
+  {title:"被温柔地照顾",category:"家庭",description:"有人记得你怕黑，睡前特地留了一盏小灯。小小的善意让你安心。",effects:{san:5,relationships:5,happiness:5},minAge:1,maxAge:12,mood:"good",rarity:"common"},
+  {title:"平凡的一年",category:"日常",description:"没有大喜，也没有大悲。日子像窗外的云一样缓慢地飘过。",effects:{},minAge:0,maxAge:100,mood:"neutral",rarity:"common"},
+  {title:"交到第一个朋友",category:"友情",description:"你们分享零食、秘密和无聊的笑话。原来有人一起玩，时间会过得很快。",effects:{relationships:10,happiness:8,san:4},minAge:4,maxAge:16,mood:"good",rarity:"common"},
+  {title:"考试失利",category:"学习",description:"努力准备的考试没有得到理想结果。你怀疑自己是不是不够聪明。",effects:{san:-7,happiness:-5},minAge:6,maxAge:22,mood:"bad",rarity:"uncommon"},
+  {title:"发现喜欢的事",category:"成长",description:"你偶然接触到一件很喜欢的事，第一次愿意不看时间地投入其中。",effects:{happiness:10,san:5,career:2},minAge:6,maxAge:30,mood:"good",rarity:"common"},
+  {title:"被同学排挤",category:"人际",description:"你被排除在一个小圈子之外。那些看似不起眼的话，在心里留了很久。",effects:{san:-12,relationships:-8,happiness:-8},minAge:7,maxAge:19,mood:"bad",rarity:"uncommon"},
+  {title:"家人带你出游",category:"家庭",description:"一家人去了陌生的地方。多年以后，你可能记不清风景，却记得当时的笑声。",effects:{relationships:8,happiness:10,money:-500},minAge:5,maxAge:18,mood:"good",rarity:"common"},
+  {title:"遇到一位好老师",category:"学习",description:"老师认真听你说话，并告诉你：现在不会，不代表以后也不会。",effects:{san:8,career:4,happiness:5},minAge:6,maxAge:20,mood:"good",rarity:"common"},
+  {title:"升学压力",category:"学习",description:"成绩、排名和未来压在一起。你开始把休息当成一种罪过。",effects:{san:-10,health:-3,happiness:-5},minAge:12,maxAge:23,mood:"bad",rarity:"uncommon"},
+  {title:"顺利毕业",category:"成长",description:"你完成了一个阶段的学习。前方仍然迷茫，但至少又多了一种选择。",effects:{career:5,happiness:8,san:4},minAge:16,maxAge:27,mood:"good",rarity:"common"},
+  {title:"青春期的烦恼",category:"心理",description:"你开始在意别人怎么看自己，也常常不知道该怎样表达真实的想法。",effects:{san:-5,happiness:-3},minAge:12,maxAge:19,mood:"bad",rarity:"common"},
+  {title:"第一次打工",category:"工作",description:"你用自己的劳动换来第一笔收入。钱不多，但拿在手里很踏实。",effects:{money:1800,career:3,happiness:4},minAge:15,maxAge:25,mood:"good",rarity:"common"},
+  {title:"找到第一份工作",category:"工作",description:"你开始规律通勤、学习规矩，也慢慢明白职场并不总是讲道理。",effects:{money:4500,career:8,san:-3},minAge:18,maxAge:32,mood:"neutral",rarity:"common"},
+  {title:"租房搬家",category:"生活",description:"你搬进一间属于自己的小房间。自由是真的，账单也是真的。",effects:{money:-2200,relationships:-2,happiness:5},minAge:18,maxAge:40,mood:"neutral",rarity:"common"},
+  {title:"遇见心动的人",category:"爱情",description:"一次普通的相遇，让你开始期待手机亮起，也开始在意自己的样子。",effects:{relationships:8,happiness:12,san:5},minAge:16,maxAge:40,mood:"good",rarity:"common"},
+  {title:"一段感情结束",category:"爱情",description:"你们最终没能走到一起。曾经认真爱过的东西离开时，还是会痛。",effects:{relationships:-10,san:-14,happiness:-12},minAge:17,maxAge:55,mood:"bad",rarity:"uncommon"},
+  {title:"升职加薪",category:"工作",description:"过去的努力终于被看见。收入提高了，责任和会议也一起增加。",effects:{money:7000,career:12,san:-4},minAge:23,maxAge:58,mood:"good",rarity:"common"},
+  {title:"项目失败",category:"工作",description:"一个项目没能达到预期，你承担了压力，也学会了如何面对失误。",effects:{money:-1800,career:-4,san:-9},minAge:20,maxAge:60,mood:"bad",rarity:"uncommon"},
+  {title:"投资赚了一笔",category:"金钱",description:"你做过的研究恰好遇上好行情，资产有所增长。好运不代表每次都如此。",effects:{money:8500,happiness:6,san:2},minAge:20,maxAge:65,mood:"good",rarity:"common"},
+  {title:"冲动消费",category:"金钱",description:"压力大的时候，你买了很多并不需要的东西。拆包裹时开心，月底却有些后悔。",effects:{money:-2600,happiness:3,san:-2},minAge:16,maxAge:70,mood:"neutral",rarity:"common"},
+  {title:"熬夜成了习惯",category:"健康",description:"你总想着再做一点事，睡眠却一天天减少。身体暂时没抗议，不代表它没记账。",effects:{health:-10,san:-5,career:2},minAge:16,maxAge:55,mood:"bad",rarity:"uncommon"},
+  {title:"开始规律运动",category:"健康",description:"你决定从散步和拉伸开始。变化很慢，但睡眠和精神状态逐渐改善。",effects:{health:12,happiness:5,san:4},minAge:16,maxAge:80,mood:"good",rarity:"common"},
+  {title:"认识一群挚友",category:"友情",description:"你们不一定常见面，但遇到难处时，总有人愿意听你把话说完。",effects:{relationships:14,san:8,happiness:8},minAge:18,maxAge:65,mood:"good",rarity:"common"},
+  {title:"亲人需要照顾",category:"家庭",description:"家庭责任突然变重。你在担心、疲惫和爱之间，努力找出一点平衡。",effects:{money:-3500,health:-5,san:-8,relationships:5},minAge:25,maxAge:75,mood:"bad",rarity:"uncommon"},
+  {title:"迎来新生命",category:"家庭",description:"一个小生命加入了你的生活。快乐很具体，责任也从此变得具体。",effects:{relationships:12,happiness:12,money:-4000,san:-4},minAge:22,maxAge:48,mood:"good",rarity:"common"},
+  {title:"房贷与账单",category:"金钱",description:"收入看起来不少，但房租、贷款和各种账单很快分走了它们。",effects:{money:-5000,san:-5,happiness:-3},minAge:25,maxAge:60,mood:"neutral",rarity:"uncommon"},
+  {title:"一次健康检查",category:"健康",description:"检查发现一些需要关注的小问题。医生建议你调整作息，别再透支身体。",effects:{health:5,money:-900,san:2},minAge:25,maxAge:85,mood:"neutral",rarity:"common"},
+  {title:"得到意外之财",category:"金钱",description:"一笔意料之外的奖金或馈赠落到你手里。它缓解了压力，也给了你一点余裕。",effects:{money:6000,happiness:7},minAge:20,maxAge:80,mood:"good",rarity:"common"},
+  {title:"工作倦怠",category:"心理",description:"每天都在忙，却说不清忙碌的意义。你需要休息，也需要重新想想自己想要什么。",effects:{san:-12,happiness:-8,health:-4},minAge:28,maxAge:65,mood:"bad",rarity:"uncommon"},
+  {title:"学会拒绝",category:"成长",description:"你终于不再答应所有人的要求。边界没有让你变得冷漠，反而让关系更诚实。",effects:{san:10,relationships:4,happiness:6},minAge:20,maxAge:70,mood:"good",rarity:"common"},
+  {title:"事业迎来高峰",category:"工作",description:"你积累的经验开始发挥价值，拥有了更多选择，也有能力帮助别人。",effects:{money:12000,career:15,happiness:8},minAge:30,maxAge:62,mood:"good",rarity:"common"},
+  {title:"一次意外受伤",category:"健康",description:"意外打乱了生活计划。治疗和休养花去不少时间，也提醒你生命并非理所当然。",effects:{health:-18,money:-2500,san:-6,lifespan:-1},minAge:10,maxAge:85,mood:"bad",rarity:"uncommon"},
+  {title:"久违的旅行",category:"生活",description:"你暂时离开熟悉的环境，看到不同的生活方式，心里重新有了空间。",effects:{money:-1800,happiness:12,san:8},minAge:18,maxAge:80,mood:"good",rarity:"common"},
+  {title:"朋友渐行渐远",category:"人际",description:"生活把大家带往不同方向。没有争吵，只是联络越来越少。",effects:{relationships:-6,happiness:-4},minAge:25,maxAge:75,mood:"neutral",rarity:"uncommon"},
+  {title:"存下第一桶金",category:"金钱",description:"长期积累终于有了成果。你不再只担心下个月，也开始认真考虑未来。",effects:{money:10000,san:5,happiness:8},minAge:25,maxAge:65,mood:"good",rarity:"common"},
+  {title:"经济环境变差",category:"金钱",description:"行业不景气，收入和资产都受到影响。你开始重新安排预算，学着留有余地。",effects:{money:-6500,san:-7,happiness:-5},minAge:20,maxAge:75,mood:"bad",rarity:"uncommon"},
+  {title:"孩子长大离家",category:"家庭",description:"家里忽然安静下来。你既为孩子高兴，也需要适应新的生活节奏。",effects:{relationships:-2,happiness:-3,san:2,money:1500},minAge:40,maxAge:75,mood:"neutral",rarity:"common"},
+  {title:"重新拾起爱好",category:"生活",description:"你找回年轻时喜欢的事情，不为赚钱，也不为证明什么，只是单纯享受。",effects:{happiness:10,san:8,relationships:3},minAge:30,maxAge:90,mood:"good",rarity:"common"},
+  {title:"退休了",category:"人生阶段",description:"工作日程终于空了下来。你需要重新定义每天的节奏，也拥有了更多自由。",effects:{career:-5,happiness:5,san:5,money:-1000},minAge:55,maxAge:75,mood:"neutral",rarity:"common"},
+  {title:"慢性病困扰",category:"健康",description:"身体需要长期管理，生活方式也不得不改变。规律治疗让情况暂时稳定下来。",effects:{health:-14,money:-3200,san:-5,lifespan:-2},minAge:45,maxAge:95,mood:"bad",rarity:"uncommon"},
+  {title:"老友重逢",category:"友情",description:"多年未见的朋友坐在你对面，聊起往事时，仿佛那些年从未真正走远。",effects:{relationships:10,happiness:9,san:5},minAge:35,maxAge:95,mood:"good",rarity:"common"},
+  {title:"享受平静的午后",category:"日常",description:"阳光落在窗边，你喝着热茶，没有急事，也没有必须证明的事。平凡本身就是礼物。",effects:{health:2,san:5,happiness:6},minAge:45,maxAge:100,mood:"good",rarity:"common"},
+  {title:"失去重要的人",category:"离别",description:"你经历了一次沉重的告别。悲伤没有立刻消失，但你慢慢学着带着记忆继续生活。",effects:{relationships:-12,san:-12,happiness:-10},minAge:25,maxAge:100,mood:"bad",rarity:"uncommon"},
+  {title:"身体恢复得不错",category:"健康",description:"长期坚持的生活习惯开始回报你。体检结果令人安心，你也更珍惜身体发出的信号。",effects:{health:10,lifespan:1,happiness:4},minAge:35,maxAge:95,mood:"good",rarity:"common"},
+  {title:"社区里帮了个忙",category:"人际",description:"你顺手帮邻居解决了一件小事。互相照应的感觉，让陌生的地方也有了人情味。",effects:{relationships:6,happiness:5,san:3},minAge:18,maxAge:100,mood:"good",rarity:"common"},
+  {title:"什么也没发生",category:"日常",description:"这一年没有值得写进新闻的大事。你吃饭、睡觉、工作，日子安静地往前走。",effects:{},minAge:0,maxAge:100,mood:"neutral",rarity:"common"},
+  {title:"彩票头奖",category:"极稀有",description:"你随手买的一张彩票竟然中了头奖。生活突然拥有了全新的选项，但如何使用这笔钱仍然是你的课题。",effects:{money:800000,happiness:20,san:8,relationships:4},minAge:18,maxAge:85,mood:"good",rarity:"legendary"},
+  {title:"一夜之间负债",category:"极稀有",description:"担保、骗局或错误的商业决定让你背上沉重债务。你必须重新建立生活的底线。",effects:{money:-50000,san:-18,happiness:-15,relationships:-8},minAge:20,maxAge:70,mood:"bad",rarity:"legendary"},
+  {title:"命运中的贵人",category:"奇迹",description:"一位重要人物看见了你的潜力，给你一个改变人生轨迹的机会。",effects:{career:25,money:18000,relationships:8,happiness:12},minAge:16,maxAge:55,mood:"good",rarity:"rare"},
+  {title:"重大事故幸存",category:"奇迹",description:"一场本可能改变一切的事故发生了。你奇迹般活了下来，从此重新审视时间的价值。",effects:{health:-25,san:10,lifespan:3,happiness:5},minAge:12,maxAge:90,mood:"good",rarity:"rare"},
+  {title:"被信任的人背叛",category:"暗潮",description:"你发现一个深信不疑的人一直在利用你。你失去了资源，也不得不重新学习信任。",effects:{money:-12000,san:-20,relationships:-20,happiness:-15},minAge:18,maxAge:75,mood:"bad",rarity:"rare"},
+  {title:"作品意外爆红",category:"奇迹",description:"你做的一件事突然被很多人看见。机会和关注一同涌来，平静的生活从此改变。",effects:{money:35000,career:22,relationships:5,happiness:18},minAge:14,maxAge:60,mood:"good",rarity:"rare"},
+  {title:"罕见的身心低谷",category:"暗潮",description:"连续的压力终于压垮了你。你需要暂停一些事，向可信任的人求助，而不是独自硬撑。",effects:{health:-15,san:-25,happiness:-18,lifespan:-2},minAge:18,maxAge:85,mood:"bad",rarity:"rare"},
+  {title:"重返校园",category:"人生转折",description:"你决定重新学习一项技能或回到校园。虽然起步比别人晚，但人生并没有规定只能选择一次。",effects:{money:-6000,career:16,san:8,happiness:10},minAge:25,maxAge:65,mood:"good",rarity:"uncommon"},
+  {title:"意外继承",category:"极稀有",description:"一位远亲留下了一笔遗产。它无法解决人生所有问题，却让你多了喘息的空间。",effects:{money:150000,relationships:3,san:6,happiness:15},minAge:18,maxAge:90,mood:"good",rarity:"legendary"},
+  {title:"人生目标彻底改变",category:"人生转折",description:"一次经历让你发现，过去追逐的东西并不是自己真正想要的。你选择重新开始。",effects:{career:-8,san:15,happiness:12,relationships:5},minAge:20,maxAge:75,mood:"good",rarity:"uncommon"},
 ];
 function clamp(value:number,min:number,max:number):number { return Math.max(min,Math.min(max,value)); }
 function formatMoney(value:number):string { return (value < 0 ? "-¥" : "¥") + Math.abs(Math.round(value)).toLocaleString("zh-CN"); }
@@ -139,19 +139,28 @@ let state=loadState();
 let latest:YearRecord[]=[];
 let notice="人生没有固定剧本。抽取下一年，看看命运会发来什么事件。";
 function save():void { localStorage.setItem(SAVE_KEY,JSON.stringify(state)); }
+const rarityRules:Record<Rarity,{label:string;weight:number;effectMultiplier:number}> = {
+  common:{label:"普通",weight:100,effectMultiplier:1},
+  uncommon:{label:"少见",weight:25,effectMultiplier:1.15},
+  rare:{label:"稀有",weight:6,effectMultiplier:1.4},
+  legendary:{label:"传说",weight:1,effectMultiplier:1.8}
+};
 function chooseEvent(age:number):LifeEvent {
   const pool=events.filter(e=>age>=e.minAge && age<=e.maxAge);
-  const total=pool.reduce((sum,e)=>sum+(e.rarity ?? 10),0);
+  const total=pool.reduce((sum,e)=>sum+rarityRules[e.rarity].weight,0);
   let roll=Math.random()*total;
-  for(const event of pool){roll-=(event.rarity ?? 10);if(roll<0)return event;}
+  for(const event of pool){roll-=rarityRules[event.rarity].weight;if(roll<0)return event;}
   return pool[pool.length-1] || events[events.length-1]!;
+}
+function calculateEffect(amount:number,rarity:Rarity):number {
+  return Math.round(amount*rarityRules[rarity].effectMultiplier);
 }
 function applyEffect(key:StatKey,amount:number):void {
   if(key==="health") state.health=clamp(state.health+amount,0,100);
-  else if(key==="money") state.money=Math.max(0,state.money+amount);
+  else if(key==="money") state.money+=amount;
   else if(key==="san") state.san=clamp(state.san+amount,0,100);
-  else if(key==="relationships") state.relationships=clamp(state.relationships+amount,0,100);
-  else if(key==="happiness") state.happiness=clamp(state.happiness+amount,0,100);
+  else if(key==="relationships") state.relationships+=amount;
+  else if(key==="happiness") state.happiness+=amount;
   else if(key==="career") state.career=clamp(state.career+amount,0,100);
   else if(key==="lifespan") state.lifespan=Math.max(0,state.lifespan+amount);
 }
@@ -170,7 +179,7 @@ function playYears(count:1|10):void {
     state.age+=1;
     state.yearsLived+=1;
     const event=chooseEvent(state.age);
-    Object.keys(event.effects).forEach(k=>applyEffect(k as StatKey,event.effects[k as StatKey]||0));
+    Object.keys(event.effects).forEach(k=>applyEffect(k as StatKey,calculateEffect(event.effects[k as StatKey]||0,event.rarity)));
     let penalty="";
     if(state.health<20){state.lifespan=Math.max(0,state.lifespan-1);penalty="健康过低，额外损耗 1 年寿元。";}
     if(state.san<15){state.lifespan=Math.max(0,state.lifespan-1);penalty+=(penalty?" ":"")+"SAN 过低，额外损耗 1 年寿元。";}
@@ -183,7 +192,7 @@ function playYears(count:1|10):void {
     if(state.lifespan<=0){state.ended=true;state.lifespan=0;state.ending="寿元耗尽，人生落下帷幕。";break;}
   }
   if(state.ended) notice="人生已结束。回顾这段旅程，或重新开始一段新人生。";
-  else notice="本次经历了 "+latest.length+" 年。每个选择与意外，都悄悄改变着你的人生。";
+  else notice="本次经历了 "+latest.length+" 年。每个选择与意外，都悄悄改变着你的人生。普通、少见、稀有与传说事件有不同的抽取权重和数值影响。";
   save();render();
 }
 function statBar(label:string,value:number,detail:string):string {
@@ -192,7 +201,7 @@ function statBar(label:string,value:number,detail:string):string {
 }
 function renderEvents():string {
   if(!latest.length) return '<div class="life-empty"><div>✦</div><h3>你的人生故事尚未开始</h3><p>每抽一次，时间就向前走一年。命运可能给予惊喜，也可能带来考验。</p></div>';
-  return '<div class="life-event-grid">'+latest.map((e,i)=>'<article class="life-event '+e.mood+'" style="--delay:'+(i*35)+'ms"><div class="life-event-top"><span>'+e.category+'</span><strong>'+e.age+' 岁</strong></div><h3>'+e.title+'</h3><p>'+e.description+'</p><div class="life-effects">'+effectText(e.effects)+'</div><div class="life-event-foot">剩余寿元 '+e.lifespanAfter+' 年</div></article>').join("")+'</div>';
+  return '<div class="life-event-grid">'+latest.map((e,i)=>'<article class="life-event '+e.mood+'" style="--delay:'+(i*35)+'ms"><div class="life-event-top"><span>'+e.category+' · '+rarityRules[e.rarity].label+'事件</span><strong>'+e.age+' 岁</strong></div><h3>'+e.title+'</h3><p>'+e.description+'</p><div class="life-effects">'+effectText(e.effects)+'</div><div class="life-event-foot">剩余寿元 '+e.lifespanAfter+' 年</div></article>').join("")+'</div>';
 }
 function renderHistory():string {
   if(!state.history.length) return '<div class="life-empty compact">还没有人生记录。开始抽卡，书写你的第一年。</div>';
