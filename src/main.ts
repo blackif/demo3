@@ -179,11 +179,17 @@ function playYears(count:1|10):void {
     state.age+=1;
     state.yearsLived+=1;
     const event=chooseEvent(state.age);
-    Object.keys(event.effects).forEach(k=>applyEffect(k as StatKey,calculateEffect(event.effects[k as StatKey]||0,event.rarity)));
+    const appliedEffects:Effects={};
+    Object.keys(event.effects).forEach(k=>{
+      const key=k as StatKey;
+      const amount=calculateEffect(event.effects[key]||0,event.rarity);
+      appliedEffects[key]=amount;
+      applyEffect(key,amount);
+    });
     let penalty="";
     if(state.health<20){state.lifespan=Math.max(0,state.lifespan-1);penalty="健康过低，额外损耗 1 年寿元。";}
     if(state.san<15){state.lifespan=Math.max(0,state.lifespan-1);penalty+=(penalty?" ":"")+"SAN 过低，额外损耗 1 年寿元。";}
-    const record:YearRecord={...event,age:state.age,year:state.yearsLived,lifespanAfter:state.lifespan,healthAfter:state.health,moneyAfter:state.money,sanAfter:state.san};
+    const record:YearRecord={...event,effects:appliedEffects,age:state.age,year:state.yearsLived,lifespanAfter:state.lifespan,healthAfter:state.health,moneyAfter:state.money,sanAfter:state.san};
     if(penalty) record.description += " "+penalty;
     latest.push(record);
     state.history.unshift(record);
@@ -205,7 +211,7 @@ function renderEvents():string {
 }
 function renderHistory():string {
   if(!state.history.length) return '<div class="life-empty compact">还没有人生记录。开始抽卡，书写你的第一年。</div>';
-  return '<div class="life-timeline">'+state.history.slice(0,20).map(e=>'<article class="life-timeline-row '+e.mood+'"><div class="timeline-age">'+e.age+'<small>岁</small></div><div class="timeline-copy"><strong>'+e.title+'</strong><p>'+e.description+'</p><small>'+e.category+' · '+effectText(e.effects)+'</small></div><div class="timeline-life">寿元 '+e.lifespanAfter+'</div></article>').join("")+'</div>';
+  return '<div class="life-timeline">'+state.history.slice(0,20).map(e=>'<article class="life-timeline-row '+e.mood+'"><div class="timeline-age">'+e.age+'<small>岁</small></div><div class="timeline-copy"><strong>'+e.title+'</strong><p>'+e.description+'</p><small>'+e.category+' · '+rarityRules[e.rarity].label+'事件 · '+effectText(e.effects)+'</small></div><div class="timeline-life">寿元 '+e.lifespanAfter+'</div></article>').join("")+'</div>';
 }
 function render():void {
  const app=document.querySelector<HTMLDivElement>("#app"); if(!app)return;
