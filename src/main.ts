@@ -146,7 +146,7 @@ const events: LifeEvent[] = [
   {title:"家庭危机后关系重建",category:"家庭",description:"一次家庭危机迫使所有人坦诚沟通，亲密关系和幸福感得到修复；处理危机消耗了大量金钱与精力。",effects:{relationships:26,happiness:22,money:-18000,health:-14},minAge:25,maxAge:75,mood:"neutral",rarity:"rare"},
   {title:"创业成功却婚姻告急",category:"事业",description:"你创办的事业终于稳定盈利，个人成就感大幅提高；多年来把工作放在第一位，让伴侣对这段关系失去信心。",effects:{money:42000,career:26,relationships:-24,happiness:-18},minAge:28,maxAge:60,mood:"neutral",rarity:"rare"},
   {title:"实现梦想却付出健康代价",category:"人生转折",description:"你终于完成多年追逐的目标，获得强烈满足感，也更相信自己的能力；为了赶上期限，你透支身体并花光备用金。",effects:{happiness:24,career:22,health:-24,money:-18000},minAge:20,maxAge:65,mood:"neutral",rarity:"rare"},
-  {title:"照顾家人与事业双重突破",category:"家庭",description:"你在照护家人的同时找到更灵活的工作方式，家庭关系和事业发展都取得突破；长期奔波让精神与健康承压。",effects:{relationships:22,career:20,san:-20,health:-16},minAge:28,maxAge:70,mood:"neutral",rarity:"rare"}
+  {title:"照顾家人与事业双重突破",category:"家庭",description:"你在照护家人的同时找到更灵活的工作方式，家庭关系和事业发展都取得突破；长期奔波让精神与健康承压。",effects:{relationships:22,career:20,san:-20,health:-16},minAge:28,maxAge:70,mood:"neutral",rarity:"rare"},
   {title:"人生目标彻底改变",category:"人生转折",description:"一次经历让你发现，过去追逐的东西并不是自己真正想要的。你选择重新开始。",effects:{career:-8,san:15,happiness:12,relationships:5},minAge:20,maxAge:75,mood:"good",rarity:"rare"},
   {title:"谈成关键合同却失去私人时间",category:"工作",description:"你签下改变团队业绩的大合同，收入也随之大幅提高；为了交付承诺，你几乎没有时间陪伴自己在乎的人。",effects:{money:32000,relationships:-24},minAge:25,maxAge:60,mood:"neutral",rarity:"rare"},
   {title:"多年努力终于获奖",category:"成长",description:"你坚持多年的专业成果获得重要奖项，能力终于被广泛认可；随之而来的竞争与审视让你承受巨大精神压力。",effects:{career:28,san:-22},minAge:20,maxAge:70,mood:"neutral",rarity:"rare"},
