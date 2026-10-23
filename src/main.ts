@@ -130,7 +130,7 @@ function formatMoney(value:number):string { return (value < 0 ? "-¥" : "¥") + 
 function loadState():LifeState {
   try {
     const raw=localStorage.getItem(SAVE_KEY);
-    if(!raw) return {...defaults,history:[]};
+    if(!raw) return newLife();
     const p=JSON.parse(raw) as Partial<LifeState>;
     return {...defaults,...p,history:Array.isArray(p.history)?p.history.slice(0,60):[]};
   } catch { return {...defaults,history:[]}; }
