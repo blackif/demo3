@@ -148,6 +148,14 @@ const events: LifeEvent[] = [
   {title:"实现梦想却付出健康代价",category:"人生转折",description:"你终于完成多年追逐的目标，获得强烈满足感，也更相信自己的能力；为了赶上期限，你透支身体并花光备用金。",effects:{happiness:24,career:22,health:-24,money:-18000},minAge:20,maxAge:65,mood:"neutral",rarity:"rare"},
   {title:"照顾家人与事业双重突破",category:"家庭",description:"你在照护家人的同时找到更灵活的工作方式，家庭关系和事业发展都取得突破；长期奔波让精神与健康承压。",effects:{relationships:22,career:20,san:-20,health:-16},minAge:28,maxAge:70,mood:"neutral",rarity:"rare"}
   {title:"人生目标彻底改变",category:"人生转折",description:"一次经历让你发现，过去追逐的东西并不是自己真正想要的。你选择重新开始。",effects:{career:-8,san:15,happiness:12,relationships:5},minAge:20,maxAge:75,mood:"good",rarity:"rare"},
+  {title:"谈成关键合同却失去私人时间",category:"工作",description:"你签下改变团队业绩的大合同，收入也随之大幅提高；为了交付承诺，你几乎没有时间陪伴自己在乎的人。",effects:{money:32000,relationships:-24},minAge:25,maxAge:60,mood:"neutral",rarity:"rare"},
+  {title:"多年努力终于获奖",category:"成长",description:"你坚持多年的专业成果获得重要奖项，能力终于被广泛认可；随之而来的竞争与审视让你承受巨大精神压力。",effects:{career:28,san:-22},minAge:20,maxAge:70,mood:"neutral",rarity:"rare"},
+  {title:"卖掉旧房获得自由却失去归属",category:"生活",description:"你以理想价格卖掉房产，手头资金一下宽裕许多；离开熟悉的社区后，你却感到强烈的失落与孤独。",effects:{money:45000,happiness:-20},minAge:30,maxAge:80,mood:"neutral",rarity:"rare"},
+  {title:"重返赛场却旧伤复发",category:"健康",description:"经过长期训练，你的体能与状态恢复到新高度；一次高强度比赛让旧伤复发，身体再次受到重创。",effects:{health:24,lifespan:-3},minAge:18,maxAge:65,mood:"neutral",rarity:"rare"},
+  {title:"成为管理者却众叛亲离",category:"工作",description:"你获得高层信任并拿下关键管理职位；为推动改革，你采取过于强硬的方式，昔日同事逐渐疏远你。",effects:{career:26,relationships:-26},minAge:28,maxAge:62,mood:"neutral",rarity:"rare"},
+  {title:"偿清债务却耗尽积蓄",category:"金钱",description:"你终于彻底摆脱沉重债务，心理负担大幅减轻；但还款几乎耗尽了所有储蓄，短期内缺少安全垫。",effects:{san:24,money:-30000},minAge:25,maxAge:75,mood:"neutral",rarity:"rare"},
+  {title:"公开发声赢得支持却遭报复",category:"人际",description:"你为不公平的事挺身而出，得到许多人的尊重与支持；相关利益方开始针对你，工作和生活受到干扰。",effects:{relationships:28,career:-22},minAge:18,maxAge:70,mood:"neutral",rarity:"rare"},
+  {title:"实现财务目标却失去热情",category:"人生转折",description:"你提前完成重要的财务目标，终于拥有选择生活方式的自由；长期只顾积累财富，让你一时找不到继续努力的意义。",effects:{money:60000,happiness:-24},minAge:30,maxAge:75,mood:"neutral",rarity:"rare"}
 ];
 function clamp(value:number,min:number,max:number):number { return Math.max(min,Math.min(max,value)); }
 function formatMoney(value:number):string { return (value < 0 ? "-¥" : "¥") + Math.abs(Math.round(value)).toLocaleString("zh-CN"); }
