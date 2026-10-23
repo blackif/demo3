@@ -56,12 +56,12 @@ const origins = [
 function newLife(): LifeState {
   const origin = origins[Math.floor(Math.random() * origins.length)]!;
   return {...defaults, history:[], origin:origin.name, trait:origin.trait,
-    health:clamp(defaults.health+origin.effects.health,0,100),
+    health:Math.max(0,defaults.health+origin.effects.health),
     money:Math.max(0,defaults.money+origin.effects.money),
-    san:clamp(defaults.san+origin.effects.san,0,100),
-    relationships:clamp(defaults.relationships+origin.effects.relationships,0,100),
-    happiness:clamp(defaults.happiness+origin.effects.happiness,0,100),
-    career:clamp(defaults.career+origin.effects.career,0,100)};
+    san:Math.max(0,defaults.san+origin.effects.san),
+    relationships:Math.max(0,defaults.relationships+origin.effects.relationships),
+    happiness:Math.max(0,defaults.happiness+origin.effects.happiness),
+    career:Math.max(0,defaults.career+origin.effects.career)};
 }
 const events: LifeEvent[] = [
   {title:"平安降生",category:"家庭",description:"你在家人的期待中来到这个世界。有人把你抱在怀里，轻轻哼着歌。",effects:{health:3,relationships:8,happiness:5},minAge:0,maxAge:1,mood:"good",rarity:"common"},
@@ -188,12 +188,12 @@ function calculateEffect(amount:number):number {
   return amount;
 }
 function applyEffect(key:StatKey,amount:number):void {
-  if(key==="health") state.health=clamp(state.health+amount,0,100);
+  if(key==="health") state.health=Math.max(0,state.health+amount);
   else if(key==="money") state.money+=amount;
-  else if(key==="san") state.san=clamp(state.san+amount,0,100);
+  else if(key==="san") state.san=Math.max(0,state.san+amount);
   else if(key==="relationships") state.relationships+=amount;
   else if(key==="happiness") state.happiness+=amount;
-  else if(key==="career") state.career=clamp(state.career+amount,0,100);
+  else if(key==="career") state.career=Math.max(0,state.career+amount);
   else if(key==="lifespan") state.lifespan=Math.max(0,state.lifespan+amount);
 }
 function effectText(effects:Effects):string {
