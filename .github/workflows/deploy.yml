@@ -2,7 +2,7 @@ name: Deploy demo3 to GitHub Pages
 
 on:
   push:
-    branches: [main, feature/gacha-simulator]
+    branches: [main, feature/gacha-simulator, feature/life-simulator]
   workflow_dispatch:
 
 permissions:
