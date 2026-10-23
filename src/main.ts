@@ -171,11 +171,11 @@ let state=loadState();
 let latest:YearRecord[]=[];
 let notice="人生没有固定剧本。抽取下一年，看看命运会发来什么事件。";
 function save():void { localStorage.setItem(SAVE_KEY,JSON.stringify(state)); }
-const rarityRules:Record<Rarity,{label:string;weight:number;effectMultiplier:number}> = {
-  common:{label:"普通",weight:100,effectMultiplier:1},
-  uncommon:{label:"少见",weight:25,effectMultiplier:1.15},
-  rare:{label:"稀有",weight:6,effectMultiplier:1.4},
-  legendary:{label:"传说",weight:1,effectMultiplier:1.8}
+const rarityRules:Record<Rarity,{label:string;weight:number}> = {
+  common:{label:"普通",weight:100},
+  uncommon:{label:"少见",weight:25},
+  rare:{label:"稀有",weight:6},
+  legendary:{label:"传说",weight:1}
 };
 function chooseEvent(age:number):LifeEvent {
   const pool=events.filter(e=>age>=e.minAge && age<=e.maxAge);
@@ -184,8 +184,8 @@ function chooseEvent(age:number):LifeEvent {
   for(const event of pool){roll-=rarityRules[event.rarity].weight;if(roll<0)return event;}
   return pool[pool.length-1] || events[events.length-1]!;
 }
-function calculateEffect(amount:number,rarity:Rarity):number {
-  return Math.round(amount*rarityRules[rarity].effectMultiplier);
+function calculateEffect(amount:number):number {
+  return amount;
 }
 function applyEffect(key:StatKey,amount:number):void {
   if(key==="health") state.health=clamp(state.health+amount,0,100);
@@ -214,7 +214,7 @@ function playYears(count:1|10):void {
     const appliedEffects:Effects={};
     Object.keys(event.effects).forEach(k=>{
       const key=k as StatKey;
-      const amount=calculateEffect(event.effects[key]||0,event.rarity);
+      const amount=calculateEffect(event.effects[key]||0);
       appliedEffects[key]=amount;
       applyEffect(key,amount);
     });
