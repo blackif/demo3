@@ -122,7 +122,7 @@ function effectText(effects:Effects):string {
   const labels:Record<StatKey,string>={health:"健康",money:"金钱",san:"SAN",relationships:"人际",happiness:"幸福",career:"事业",lifespan:"寿元"};
   const keys=Object.keys(effects) as StatKey[];
   if(!keys.length) return "数值没有变化";
-  return keys.map(k=>labels[k]+((effects[k]||0)>0?" +":" ")+(k==="money"?formatMoney(Math.abs(effects[k]||0)):String(effects[k]))).join("　·　");
+  return keys.map(k=>labels[k]+((effects[k]||0)>0?" +":" ")+(k==="money"?((effects[k]||0)<0?"-":"")+formatMoney(Math.abs(effects[k]||0)):String(effects[k]))).join("　·　");
 }
 function playYears(count:1|10):void {
   if(state.ended) return;
