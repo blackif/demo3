@@ -2,7 +2,7 @@ name: Deploy demo3 to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, feature/gacha-simulator]
   workflow_dispatch:
 
 permissions:
@@ -24,7 +24,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
       - name: Install dependencies
         run: npm install
       - name: Build
@@ -36,6 +35,7 @@ jobs:
         with:
           path: dist
   deploy:
+    if: github.ref == 'refs/heads/main'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
