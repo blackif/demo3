@@ -197,6 +197,7 @@ function renderSummon(): string {
           <div class="resource-foot"><span>累计召唤</span><strong>${state.totalPulls}</strong></div>
           <div class="resource-foot"><span>距 SSR 保底</span><strong>${PITY_LIMIT - state.pity} 抽</strong></div>
           <div class="pity-track"><div style="width:${Math.min(100, state.pity / PITY_LIMIT * 100)}%"></div></div>
+          <button class="claim-crystals" data-action="add-crystals">＋ 领取 1,600 星晶</button>
         </div>
         <div class="panel rates-panel">
           <div class="section-kicker">DROP RATES</div><h3>概率公示</h3>
@@ -275,6 +276,12 @@ function render(): void {
       const action = button.dataset.action;
       if (action === "single") performDraw(1);
       if (action === "ten") performDraw(10);
+      if (action === "add-crystals") {
+        state.crystals += 1600;
+        notice = "已领取 1,600 星晶，可以继续召唤了。";
+        saveState();
+        render();
+      }
       if (action === "home") {
         activeTab = "summon";
         latestResults = [];
