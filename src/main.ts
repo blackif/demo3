@@ -117,13 +117,10 @@ function performDraw(count: 1 | 10): void {
     }
 
     if (character.rarity === "SSR") state.pity = 0;
-    const isNew = !state.collection.includes(character.name);
-    if (isNew) state.collection.push(character.name);
-
     results.push({
       ...character,
       id: nextResultId++,
-      isNew,
+      isNew: false,
       time: new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
     });
   }
@@ -133,18 +130,18 @@ function performDraw(count: 1 | 10): void {
     const srPool = characters.filter((item) => item.rarity === "SR");
     const guaranteed = srPool[Math.floor(Math.random() * srPool.length)]!;
     const previous = results[results.length - 1]!;
-    if (!state.collection.includes(guaranteed.name)) state.collection.push(guaranteed.name);
     results[results.length - 1] = {
       ...guaranteed,
       id: previous.id,
-      isNew: !state.collection.includes(guaranteed.name),
+      isNew: false,
       time: previous.time,
     };
   }
 
-  // Rebuild collection from actual results so the ten-pull guarantee is counted correctly.
+  // Update the collection only after applying the ten-pull guarantee.
   for (const result of results) {
-    if (!state.collection.includes(result.name)) state.collection.push(result.name);
+    result.isNew = !state.collection.includes(result.name);
+    if (result.isNew) state.collection.push(result.name);
   }
   state.history = [...results.slice().reverse(), ...state.history].slice(0, 30);
   latestResults = results;
