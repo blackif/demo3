@@ -10,6 +10,7 @@ interface LifeEvent {
   minAge: number;
   maxAge: number;
   mood: "good" | "bad" | "neutral";
+  rarity?: number;
 }
 interface YearRecord extends LifeEvent {
   age: number;
@@ -32,13 +33,35 @@ interface LifeState {
   history: YearRecord[];
   ended: boolean;
   ending: string;
+  origin: string;
+  trait: string;
 }
 const SAVE_KEY = "demo3-life-simulator-v1";
 const defaults: LifeState = {
   age: 0, lifespan: 80, health: 90, money: 0, san: 80,
   relationships: 45, happiness: 60, career: 0, yearsLived: 0,
-  history: [], ended: false, ending: ""
+  history: [], ended: false, ending: "", origin: "普通家庭", trait: "随遇而安"
 };
+const origins = [
+  {name:"普通家庭", trait:"随遇而安", effects:{health:0,money:0,san:0,relationships:0,happiness:0,career:0}},
+  {name:"富裕家庭", trait:"资源充足", effects:{health:5,money:12000,san:5,relationships:0,happiness:5,career:2}},
+  {name:"拮据家庭", trait:"早熟独立", effects:{health:-5,money:800,san:-3,relationships:3,happiness:-3,career:5}},
+  {name:"书香门第", trait:"好奇求知", effects:{health:0,money:1500,san:8,relationships:0,happiness:3,career:8}},
+  {name:"艺术之家", trait:"感受敏锐", effects:{health:0,money:0,san:5,relationships:5,happiness:10,career:2}},
+  {name:"动荡家庭", trait:"逆境求生", effects:{health:-8,money:0,san:-8,relationships:-5,happiness:-5,career:4}},
+  {name:"被爱包围", trait:"信任世界", effects:{health:3,money:500,san:8,relationships:12,happiness:8,career:0}},
+  {name:"天赋异禀", trait:"学习很快", effects:{health:0,money:0,san:3,relationships:0,happiness:3,career:12}}
+] as const;
+function newLife(): LifeState {
+  const origin = origins[Math.floor(Math.random() * origins.length)]!;
+  return {...defaults, history:[], origin:origin.name, trait:origin.trait,
+    health:clamp(defaults.health+origin.effects.health,0,100),
+    money:Math.max(0,defaults.money+origin.effects.money),
+    san:clamp(defaults.san+origin.effects.san,0,100),
+    relationships:clamp(defaults.relationships+origin.effects.relationships,0,100),
+    happiness:clamp(defaults.happiness+origin.effects.happiness,0,100),
+    career:clamp(defaults.career+origin.effects.career,0,100)};
+}
 const events: LifeEvent[] = [
   {title:"平安降生",category:"家庭",description:"你在家人的期待中来到这个世界。有人把你抱在怀里，轻轻哼着歌。",effects:{health:3,relationships:8,happiness:5},minAge:0,maxAge:1,mood:"good"},
   {title:"第一次发烧",category:"健康",description:"夜里突然发起高烧，家人抱着你赶去医院。幸好及时治疗。",effects:{health:-8,money:-300,happiness:-2},minAge:0,maxAge:5,mood:"bad"},
@@ -90,6 +113,17 @@ const events: LifeEvent[] = [
   {title:"身体恢复得不错",category:"健康",description:"长期坚持的生活习惯开始回报你。体检结果令人安心，你也更珍惜身体发出的信号。",effects:{health:10,lifespan:1,happiness:4},minAge:35,maxAge:95,mood:"good"},
   {title:"社区里帮了个忙",category:"人际",description:"你顺手帮邻居解决了一件小事。互相照应的感觉，让陌生的地方也有了人情味。",effects:{relationships:6,happiness:5,san:3},minAge:18,maxAge:100,mood:"good"},
   {title:"什么也没发生",category:"日常",description:"这一年没有值得写进新闻的大事。你吃饭、睡觉、工作，日子安静地往前走。",effects:{},minAge:0,maxAge:100,mood:"neutral"}
+
+  {title:"彩票头奖",category:"极稀有",description:"你随手买的一张彩票竟然中了头奖。生活突然拥有了全新的选项，但如何使用这笔钱仍然是你的课题。",effects:{money:800000,happiness:20,san:8,relationships:4},minAge:18,maxAge:85,mood:"good",rarity:1},
+  {title:"一夜之间负债",category:"极稀有",description:"担保、骗局或错误的商业决定让你背上沉重债务。你必须重新建立生活的底线。",effects:{money:-50000,san:-18,happiness:-15,relationships:-8},minAge:20,maxAge:70,mood:"bad",rarity:1},
+  {title:"命运中的贵人",category:"奇迹",description:"一位重要人物看见了你的潜力，给你一个改变人生轨迹的机会。",effects:{career:25,money:18000,relationships:8,happiness:12},minAge:16,maxAge:55,mood:"good",rarity:2},
+  {title:"重大事故幸存",category:"奇迹",description:"一场本可能改变一切的事故发生了。你奇迹般活了下来，从此重新审视时间的价值。",effects:{health:-25,san:10,lifespan:3,happiness:5},minAge:12,maxAge:90,mood:"good",rarity:2},
+  {title:"被信任的人背叛",category:"暗潮",description:"你发现一个深信不疑的人一直在利用你。你失去了资源，也不得不重新学习信任。",effects:{money:-12000,san:-20,relationships:-20,happiness:-15},minAge:18,maxAge:75,mood:"bad",rarity:2},
+  {title:"作品意外爆红",category:"奇迹",description:"你做的一件事突然被很多人看见。机会和关注一同涌来，平静的生活从此改变。",effects:{money:35000,career:22,relationships:5,happiness:18},minAge:14,maxAge:60,mood:"good",rarity:2},
+  {title:"罕见的身心低谷",category:"暗潮",description:"连续的压力终于压垮了你。你需要暂停一些事，向可信任的人求助，而不是独自硬撑。",effects:{health:-15,san:-25,happiness:-18,lifespan:-2},minAge:18,maxAge:85,mood:"bad",rarity:2},
+  {title:"重返校园",category:"人生转折",description:"你决定重新学习一项技能或回到校园。虽然起步比别人晚，但人生并没有规定只能选择一次。",effects:{money:-6000,career:16,san:8,happiness:10},minAge:25,maxAge:65,mood:"good",rarity:3},
+  {title:"意外继承",category:"极稀有",description:"一位远亲留下了一笔遗产。它无法解决人生所有问题，却让你多了喘息的空间。",effects:{money:150000,relationships:3,san:6,happiness:15},minAge:18,maxAge:90,mood:"good",rarity:1},
+  {title:"人生目标彻底改变",category:"人生转折",description:"一次经历让你发现，过去追逐的东西并不是自己真正想要的。你选择重新开始。",effects:{career:-8,san:15,happiness:12,relationships:5},minAge:20,maxAge:75,mood:"good",rarity:3},
 ];
 function clamp(value:number,min:number,max:number):number { return Math.max(min,Math.min(max,value)); }
 function formatMoney(value:number):string { return (value < 0 ? "-¥" : "¥") + Math.abs(Math.round(value)).toLocaleString("zh-CN"); }
@@ -107,7 +141,10 @@ let notice="人生没有固定剧本。抽取下一年，看看命运会发来�
 function save():void { localStorage.setItem(SAVE_KEY,JSON.stringify(state)); }
 function chooseEvent(age:number):LifeEvent {
   const pool=events.filter(e=>age>=e.minAge && age<=e.maxAge);
-  return pool[Math.floor(Math.random()*pool.length)] || events[events.length-1]!;
+  const total=pool.reduce((sum,e)=>sum+(e.rarity ?? 10),0);
+  let roll=Math.random()*total;
+  for(const event of pool){roll-=(event.rarity ?? 10);if(roll<0)return event;}
+  return pool[pool.length-1] || events[events.length-1]!;
 }
 function applyEffect(key:StatKey,amount:number):void {
   if(key==="health") state.health=clamp(state.health+amount,0,100);
@@ -164,14 +201,14 @@ function renderHistory():string {
 function render():void {
  const app=document.querySelector<HTMLDivElement>("#app"); if(!app)return;
  const ended=state.ended;
- app.innerHTML='<div class="life-shell"><header class="life-header"><a class="life-brand" href="#" data-action="home"><span>⌛</span><div><strong>人生抽卡模拟器</strong><small>ONE LIFE, MANY POSSIBILITIES</small></div></a><div class="life-header-right"><span class="life-save">● 本地自动存档</span><button class="life-reset" data-action="reset">重新开始</button></div></header><section class="life-hero"><div class="life-hero-copy"><div class="life-eyebrow">LIFE SIMULATION · 命运抽卡</div><h1>你的一生，<br><em>会抽到什么？</em></h1><p>每一次抽卡，都是人生向前的一年。健康、金钱、SAN、关系与机遇共同塑造你的命运。</p><div class="life-hero-tags"><span>✦ 每抽消耗 1 年寿元</span><span>✦ 十连经历 10 年</span><span>✦ 人生没有固定结局</span></div></div><div class="life-hourglass" aria-hidden="true"><div class="hourglass-glow"></div><div class="hourglass">⌛</div><div class="hourglass-orbit orbit-a"></div><div class="hourglass-orbit orbit-b"></div><span class="hourglass-caption">MEMENTO VITAE</span></div></section><section class="life-dashboard"><div class="life-main-column"><div class="life-panel life-status-panel"><div class="life-section-head"><div><span class="life-kicker">YOUR LIFE</span><h2>人生状态</h2></div><span class="life-age-chip">'+(ended?"人生终章":state.age+" 岁")+'</span></div><div class="life-vitals"><div class="life-lifespan"><span>⌛ 剩余寿元</span><strong>'+state.lifespan+'<small>年</small></strong><div class="lifespan-track"><div style="width:'+clamp(state.lifespan/80*100,0,100)+'%"></div></div><small>初始 80 年 · 每次抽卡消耗 1 年</small></div><div class="life-vital-mini"><span>💰 当前资产</span><strong>'+formatMoney(state.money)+'</strong><span>🧭 累计经历</span><strong>'+state.yearsLived+' 年</strong></div></div><div class="life-stats-grid">'+statBar("健康",state.health,""+state.health+"/100")+statBar("SAN / 精神",state.san,""+state.san+"/100")+statBar("人际关系",state.relationships,""+state.relationships+"/100")+statBar("幸福感",state.happiness,""+state.happiness+"/100")+statBar("事业发展",state.career,""+state.career+"/100")+'</div><p class="life-rule-note">⚠ 健康低于 20 或 SAN 低于 15 时，每年额外损耗 1 年寿元；健康归零或寿元归零，人生结束。</p></div><div class="life-panel life-story-panel"><div class="life-section-head"><div><span class="life-kicker">FATE DRAW</span><h2>命运事件</h2></div><span class="life-history-count">本次 '+latest.length+' 年</span></div><p class="life-notice" role="status">'+notice+'</p>'+renderEvents()+'</div><div class="life-panel life-history-panel"><div class="life-section-head"><div><span class="life-kicker">MEMORIES</span><h2>人生回忆</h2></div><span class="life-history-count">最近 '+Math.min(20,state.history.length)+' 年</span></div>'+renderHistory()+'</div></div><aside class="life-side-column"><div class="life-panel life-draw-panel"><span class="life-kicker">NEXT CHAPTER</span><h2>抽取人生</h2><p>下一张卡牌会揭晓未来一年发生的事。你无法预知结果，只能继续生活。</p><button class="life-draw-btn single" data-action="single" '+(ended?'disabled':'')+'><span class="draw-icon">✧</span><span><strong>抽卡 × 1</strong><small>经历 1 年 · 消耗 1 年寿元</small></span></button><button class="life-draw-btn ten" data-action="ten" '+(ended?'disabled':'')+'><span class="draw-icon">✦</span><span><strong>十连抽 × 10</strong><small>经历最多 10 年 · 消耗最多 10 年寿元</small></span></button><div class="life-draw-foot">人生事件包含成长、学习、工作、金钱、爱情、家庭、健康、友情、退休与老年生活等。</div>'+(ended?'<div class="life-ending"><span>人生终章</span><strong>'+state.age+' 岁 · '+state.ending+'</strong><button data-action="reset">开启新人生 ↗</button></div>':'')+'</div><div class="life-panel life-principles"><span class="life-kicker">LIFE IS UNPREDICTABLE</span><h3>人生规则</h3><div class="life-rule"><span>01</span><div><strong>时间不可逆</strong><p>每次抽卡都会让年龄增长，寿元减少。</p></div></div><div class="life-rule"><span>02</span><div><strong>状态会影响寿命</strong><p>健康和精神状态太差，会加速消耗寿元。</p></div></div><div class="life-rule"><span>03</span><div><strong>没有完美人生</strong><p>好运与挫折交替发生，平凡的一年也值得记录。</p></div></div><div class="life-rule"><span>04</span><div><strong>每次人生都不同</strong><p>事件随机生成，结果保存在当前浏览器。</p></div></div></div></aside></section><footer class="life-footer"><span>⌛ 人生抽卡模拟器 · ONE LIFE, MANY POSSIBILITIES</span><span>纯前端模拟 · 事件与数值均为虚构游戏规则</span></footer></div>';
+ app.innerHTML='<div class="life-shell"><header class="life-header"><a class="life-brand" href="#" data-action="home"><span>⌛</span><div><strong>人生抽卡模拟器</strong><small>ONE LIFE, MANY POSSIBILITIES</small></div></a><div class="life-header-right"><span class="life-save">● 本地自动存档</span><button class="life-reset" data-action="reset">重新开始</button></div></header><section class="life-hero"><div class="life-hero-copy"><div class="life-eyebrow">LIFE SIMULATION · 命运抽卡</div><h1>你的一生，<br><em>会抽到什么？</em></h1><p>每一次抽卡，都是人生向前的一年。健康、金钱、SAN、关系与机遇共同塑造你的命运。</p><div class="life-hero-tags"><span>✦ 每抽消耗 1 年寿元</span><span>✦ 十连经历 10 年</span><span>✦ 人生没有固定结局</span></div></div><div class="life-hourglass" aria-hidden="true"><div class="hourglass-glow"></div><div class="hourglass">⌛</div><div class="hourglass-orbit orbit-a"></div><div class="hourglass-orbit orbit-b"></div><span class="hourglass-caption">MEMENTO VITAE</span></div></section><section class="life-dashboard"><div class="life-main-column"><div class="life-panel life-status-panel"><div class="life-section-head"><div><span class="life-kicker">YOUR LIFE</span><h2>人生状态</h2></div><span class="life-age-chip">'+(ended?"人生终章":state.age+" 岁")+'</span></div><div class="life-origin-card"><span>🎲 本次人生起点</span><strong>'+state.origin+'</strong><small>先天特质：'+state.trait+'</small></div><div class="life-vitals"><div class="life-lifespan"><span>⌛ 剩余寿元</span><strong>'+state.lifespan+'<small>年</small></strong><div class="lifespan-track"><div style="width:'+clamp(state.lifespan/80*100,0,100)+'%"></div></div><small>初始 80 年 · 每次抽卡消耗 1 年</small></div><div class="life-vital-mini"><span>💰 当前资产</span><strong>'+formatMoney(state.money)+'</strong><span>🧭 累计经历</span><strong>'+state.yearsLived+' 年</strong></div></div><div class="life-stats-grid">'+statBar("健康",state.health,""+state.health+"/100")+statBar("SAN / 精神",state.san,""+state.san+"/100")+statBar("人际关系",state.relationships,""+state.relationships+"/100")+statBar("幸福感",state.happiness,""+state.happiness+"/100")+statBar("事业发展",state.career,""+state.career+"/100")+'</div><p class="life-rule-note">⚠ 健康低于 20 或 SAN 低于 15 时，每年额外损耗 1 年寿元；健康归零或寿元归零，人生结束。</p></div><div class="life-panel life-story-panel"><div class="life-section-head"><div><span class="life-kicker">FATE DRAW</span><h2>命运事件</h2></div><span class="life-history-count">本次 '+latest.length+' 年</span></div><p class="life-notice" role="status">'+notice+'</p>'+renderEvents()+'</div><div class="life-panel life-history-panel"><div class="life-section-head"><div><span class="life-kicker">MEMORIES</span><h2>人生回忆</h2></div><span class="life-history-count">最近 '+Math.min(20,state.history.length)+' 年</span></div>'+renderHistory()+'</div></div><aside class="life-side-column"><div class="life-panel life-draw-panel"><span class="life-kicker">NEXT CHAPTER</span><h2>抽取人生</h2><p>下一张卡牌会揭晓未来一年发生的事。你无法预知结果，只能继续生活。</p><button class="life-draw-btn single" data-action="single" '+(ended?'disabled':'')+'><span class="draw-icon">✧</span><span><strong>抽卡 × 1</strong><small>经历 1 年 · 消耗 1 年寿元</small></span></button><button class="life-draw-btn ten" data-action="ten" '+(ended?'disabled':'')+'><span class="draw-icon">✦</span><span><strong>十连抽 × 10</strong><small>经历最多 10 年 · 消耗最多 10 年寿元</small></span></button><div class="life-draw-foot">人生事件包含成长、学习、工作、金钱、爱情、家庭、健康、友情、退休与老年生活等。少数事件极其罕见，可能彻底改写人生。</div>'+(ended?'<div class="life-ending"><span>人生终章</span><strong>'+state.age+' 岁 · '+state.ending+'</strong><button data-action="reset">开启新人生 ↗</button></div>':'')+'</div><div class="life-panel life-principles"><span class="life-kicker">LIFE IS UNPREDICTABLE</span><h3>人生规则</h3><div class="life-rule"><span>01</span><div><strong>时间不可逆</strong><p>每次抽卡都会让年龄增长，寿元减少。</p></div></div><div class="life-rule"><span>02</span><div><strong>状态会影响寿命</strong><p>健康和精神状态太差，会加速消耗寿元。</p></div></div><div class="life-rule"><span>03</span><div><strong>没有完美人生</strong><p>好运与挫折交替发生，平凡的一年也值得记录。</p></div></div><div class="life-rule"><span>04</span><div><strong>每次人生都不同</strong><p>事件随机生成，结果保存在当前浏览器。</p></div></div></div></aside></section><footer class="life-footer"><span>⌛ 人生抽卡模拟器 · ONE LIFE, MANY POSSIBILITIES</span><span>纯前端模拟 · 事件与数值均为虚构游戏规则</span></footer></div>';
  app.querySelectorAll<HTMLButtonElement>("[data-action]").forEach(button=>button.addEventListener("click",()=>{
   const action=button.dataset.action;
   if(action==="single")playYears(1);
   if(action==="ten")playYears(10);
   if(action==="home"){window.scrollTo({top:0,behavior:"smooth"});render();}
   if(action==="reset"&&window.confirm("确定结束当前人生并重新开始吗？当前人生记录将被清空。")){
-   state={...defaults,history:[]};latest=[];notice="新的人生已经开始。每次抽卡都会带来未知的一年。";save();render();window.scrollTo({top:0,behavior:"smooth"});
+   state=newLife();latest=[];notice="新的人生已经开始。你的出生背景与先天特质已随机生成，命运仍然未知。";save();render();window.scrollTo({top:0,behavior:"smooth"});
   }
  }));
 }
