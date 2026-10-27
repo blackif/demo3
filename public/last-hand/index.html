@@ -1,73 +1,8 @@
 <!doctype html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101014">
-  <meta name="description" content="绝境猜约：有限卡牌与星星资源的原创策略猜拳游戏。">
-  <title>绝境猜约｜限定猜约</title>
-  <link rel="stylesheet" href="./style.css">
-</head>
-<body>
-  <div class="grain"></div>
-  <header class="topbar">
-    <a class="brand" href="./"><span class="brand-mark">✦</span><span>绝境猜约<small>LAST HAND PROTOCOL</small></span></a>
-    <div class="top-status"><span class="live-dot"></span> 本地原型 <span class="divider">/</span> 规则测试版</div>
-  </header>
-  <main>
-    <section class="hero">
-      <div class="eyebrow">生存游戏 · 第一阶段</div>
-      <h1>每一张牌，<em>只有一次机会。</em></h1>
-      <p>读懂对手，管理手牌。在最后一张牌落下之前，没人能确定赢家。</p>
-    </section>
-
-    <section class="game-layout">
-      <aside class="panel rules-panel">
-        <div class="panel-head"><span>01 / 游戏规则</span><span class="mini-tag">12 ROUNDS</span></div>
-        <div class="rule-stat"><strong>12</strong><span>每位玩家的初始手牌</span></div>
-        <div class="rule-stat"><strong>3</strong><span>每位玩家的初始星星</span></div>
-        <ul class="rules-list">
-          <li><b>有限手牌</b><span>石头、剪刀、布各 4 张，打出后不再补充。</span></li>
-          <li><b>胜负结算</b><span>胜者从败者处赢得 1 颗星星；平局不变。</span></li>
-          <li><b>星星归零</b><span>失去全部星星即被淘汰，对局结束。</span></li>
-          <li><b>最终判定</b><span>牌局结束时，星星较多者获胜；相同则平局。</span></li>
-        </ul>
-        <div class="rule-note">原型模式：双人同屏轮流选择。每次选择后请把设备交给另一位玩家，避免看到对方的选择。</div>
-      </aside>
-
-      <section class="panel arena">
-        <div class="panel-head"><span>02 / 对局现场</span><span id="phase-label" class="mini-tag">等待开始</span></div>
-        <div class="arena-score">
-          <div class="player-score" id="p1-score"><div class="avatar">A</div><div><span class="player-name">玩家 A</span><strong id="p1-stars">★★★</strong><small id="p1-count">剩余手牌 12</small></div></div>
-          <div class="round-counter"><small>ROUND</small><strong id="round-number">— / 12</strong></div>
-          <div class="player-score right" id="p2-score"><div><span class="player-name">玩家 B</span><strong id="p2-stars">★★★</strong><small id="p2-count">剩余手牌 12</small></div><div class="avatar">B</div></div>
-        </div>
-        <div class="duel-board">
-          <div class="duel-side"><span class="duel-label">PLAYER A</span><div id="p1-card" class="played-card face-down">?</div><span id="p1-caption">等待出牌</span></div>
-          <div class="versus">VS</div>
-          <div class="duel-side"><span class="duel-label">PLAYER B</span><div id="p2-card" class="played-card face-down">?</div><span id="p2-caption">等待出牌</span></div>
-        </div>
-        <div class="turn-message" id="turn-message">准备好了吗？开始一局新的对决。</div>
-        <div class="hand-area">
-          <div class="hand-title"><span id="hand-title">选择你的手牌</span><span id="hand-count" class="muted">每种 4 张</span></div>
-          <div class="hand" id="hand">
-            <button class="card rock" data-card="rock" disabled><span class="card-symbol">✊</span><b>石头</b><small id="rock-count">×4</small></button>
-            <button class="card scissors" data-card="scissors" disabled><span class="card-symbol">✌</span><b>剪刀</b><small id="scissors-count">×4</small></button>
-            <button class="card paper" data-card="paper" disabled><span class="card-symbol">✋</span><b>布</b><small id="paper-count">×4</small></button>
-          </div>
-        </div>
-        <div class="action-row"><button id="start-btn" class="primary-btn">开始新对局 <span>↗</span></button><button id="reset-btn" class="secondary-btn" disabled>重新开始</button></div>
-        <div id="result-banner" class="result-banner" hidden></div>
-      </section>
-    </section>
-
-    <section class="panel history-panel">
-      <div class="panel-head"><span>03 / 对局记录</span><span class="muted">仅记录本局</span></div>
-      <div id="history-empty" class="history-empty">尚未开始。每轮的出牌、星星变化与结果都会显示在这里。</div>
-      <div id="history-list" class="history-list"></div>
-    </section>
-    <footer><span>绝境猜约 · LAST HAND</span><span>原创规则原型 · 真人联机尚未接入</span></footer>
-  </main>
-  <script type="module" src="./game.js"></script>
-</body>
-</html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>绝境猜约｜Last Hand</title><link rel="stylesheet" href="./style.css"></head>
+<body><header><b>✦ 绝境猜约 <small>LAST HAND PROTOCOL</small></b><span>规则原型 · 本地双人</span></header><main>
+<p class="eyebrow">生存游戏 · 第一阶段</p><h1>每一张牌，<em>只有一次机会。</em></h1><p class="intro">读懂对手，管理手牌。在最后一张牌落下之前，没人能确定赢家。</p>
+<section class="layout"><aside class="panel"><h2>游戏规则 <small>12 ROUNDS</small></h2><div class="stat"><b>12</b> 每位玩家的初始手牌</div><div class="stat"><b>3</b> 每位玩家的初始星星</div><ul><li><b>有限手牌</b><p>石头、剪刀、布各 4 张，打出后不再补充。</p></li><li><b>胜负结算</b><p>胜者从败者处赢得 1 颗星星；平局不变。</p></li><li><b>淘汰条件</b><p>失去全部星星即被淘汰；否则最多进行 12 轮。</p></li></ul><p class="note">当前是双人同设备轮流选择原型。真人在线联机需要独立的房间服务，尚未接入。</p></aside>
+<section class="panel arena"><h2>对局现场 <small id="phase">等待开始</small></h2><div class="scores"><div><span>玩家 A</span><b id="starsA">★★★</b><small id="countA">剩余手牌 12</small></div><strong id="round">— / 12</strong><div class="right"><span>玩家 B</span><b id="starsB">★★★</b><small id="countB">剩余手牌 12</small></div></div>
+<div class="duel"><div><small>PLAYER A</small><div id="cardA" class="played">?</div><span id="labelA">等待出牌</span></div><strong>VS</strong><div><small>PLAYER B</small><div id="cardB" class="played">?</div><span id="labelB">等待出牌</span></div></div><p id="message" class="message">准备好了吗？开始一局新的对决。</p><h3 id="handTitle">选择你的手牌</h3><div class="hand"><button data-card="rock" disabled><span>✊</span><b>石头</b><small id="rockCount">×4</small></button><button data-card="scissors" disabled><span>✌</span><b>剪刀</b><small id="scissorsCount">×4</small></button><button data-card="paper" disabled><span>✋</span><b>布</b><small id="paperCount">×4</small></button></div><div class="actions"><button id="start" class="primary">开始新对局 ↗</button><button id="reset" disabled>重新开始</button></div><p id="result" class="result" hidden></p></section></section>
+<section class="panel history"><h2>对局记录 <small>仅记录本局</small></h2><p id="empty">尚未开始。每轮的出牌、星星变化与结果都会显示在这里。</p><div id="history"></div></section><footer>原创规则原型 · 真人联机尚未接入</footer></main><script type="module" src="./game.js"></script></body></html>
