@@ -1,14 +1,8 @@
 <!doctype html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#11111b" />
-    <meta name="description" content="一个可在浏览器中游玩的原创角色抽卡模拟器。" />
-    <title>抽卡模拟器</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
-</html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>绝境猜约｜Last Hand</title><link rel="stylesheet" href="./style.css"></head>
+<body><header><b>✦ 绝境猜约 <small>LAST HAND PROTOCOL</small></b><span>规则原型 · 本地双人</span></header><main>
+<p class="eyebrow">生存游戏 · 第一阶段</p><h1>每一张牌，<em>只有一次机会。</em></h1><p class="intro">读懂对手，管理手牌。在最后一张牌落下之前，没人能确定赢家。</p>
+<section class="layout"><aside class="panel"><h2>游戏规则 <small>12 ROUNDS</small></h2><div class="stat"><b>12</b> 每位玩家的初始手牌</div><div class="stat"><b>3</b> 每位玩家的初始星星</div><ul><li><b>有限手牌</b><p>石头、剪刀、布各 4 张，打出后不再补充。</p></li><li><b>胜负结算</b><p>胜者从败者处赢得 1 颗星星；平局不变。</p></li><li><b>淘汰条件</b><p>失去全部星星即被淘汰；否则最多进行 12 轮。</p></li></ul><p class="note">当前是双人同设备轮流选择原型。真人在线联机需要独立的房间服务，尚未接入。</p></aside>
+<section class="panel arena"><h2>对局现场 <small id="phase">等待开始</small></h2><div class="scores"><div><span>玩家 A</span><b id="starsA">★★★</b><small id="countA">剩余手牌 12</small></div><strong id="round">— / 12</strong><div class="right"><span>玩家 B</span><b id="starsB">★★★</b><small id="countB">剩余手牌 12</small></div></div>
+<div class="duel"><div><small>PLAYER A</small><div id="cardA" class="played">?</div><span id="labelA">等待出牌</span></div><strong>VS</strong><div><small>PLAYER B</small><div id="cardB" class="played">?</div><span id="labelB">等待出牌</span></div></div><p id="message" class="message">准备好了吗？开始一局新的对决。</p><h3 id="handTitle">选择你的手牌</h3><div class="hand"><button data-card="rock" disabled><span>✊</span><b>石头</b><small id="rockCount">×4</small></button><button data-card="scissors" disabled><span>✌</span><b>剪刀</b><small id="scissorsCount">×4</small></button><button data-card="paper" disabled><span>✋</span><b>布</b><small id="paperCount">×4</small></button></div><div class="actions"><button id="start" class="primary">开始新对局 ↗</button><button id="reset" disabled>重新开始</button></div><p id="result" class="result" hidden></p></section></section>
+<section class="panel history"><h2>对局记录 <small>仅记录本局</small></h2><p id="empty">尚未开始。每轮的出牌、星星变化与结果都会显示在这里。</p><div id="history"></div></section><footer>原创规则原型 · 真人联机尚未接入</footer></main><script type="module" src="./game.js"></script></body></html>
