@@ -105,3 +105,22 @@ body{background:radial-gradient(ellipse at 75% -20%,#293a43 0%,transparent 50%),
 .achievement-icon{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:rgba(230,195,139,.1);color:#e6c38b;font-size:17px}
 .life-achievement strong{display:block;font-size:11px;color:#e5e9ec}.life-achievement p{margin:4px 0 0;font-size:10px;line-height:1.5;color:#9baab8}.achievement-state{grid-column:2;font-size:9px;color:#9bd8c2}
 @media(max-width:620px){.life-goals-grid,.life-achievements-grid{grid-template-columns:1fr}.life-goal{padding:12px}}
+
+
+/* Ending summary replaces the normal hero copy after the life ends. */
+.life-hero-ending{max-width:640px;margin-top:18px}
+.life-hero-ending .ending-overline{display:block;font-size:10px;letter-spacing:.16em;color:#e3b8a8;margin-bottom:12px}
+.life-hero-ending .life-ending-report{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:10px 20px}
+.life-hero-ending .ending-score{grid-row:span 2;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:112px;min-height:112px;padding:14px;border:1px solid rgba(227,184,168,.25);border-radius:16px;background:rgba(13,13,22,.42)}
+.life-hero-ending .ending-score span{font-size:10px;color:#c0c8d3}
+.life-hero-ending .ending-score strong{font-size:42px;line-height:1.15;color:#f5ce80}
+.life-hero-ending .ending-score small{font-size:10px;color:#c0c8d3}
+.life-hero-ending .ending-title h2{font-size:clamp(22px,3vw,32px);line-height:1.3;margin:0 0 7px;color:#f2f0ff}
+.life-hero-ending .ending-title p{font-size:12px;line-height:1.8;margin:0;color:#c0c8d3}
+.life-hero-ending .ending-summary{grid-column:2;display:flex;flex-wrap:wrap;gap:8px}
+.life-hero-ending .ending-summary>span{display:flex;align-items:baseline;gap:6px;padding:7px 10px;border:1px solid rgba(208,224,232,.14);border-radius:8px;background:rgba(13,13,22,.3)}
+.life-hero-ending .ending-summary small{font-size:10px;color:#9291aa}
+.life-hero-ending .ending-summary strong{font-size:12px;color:#f2f0ff}
+.life-hero-ending .ending-footnote{grid-column:1/-1;font-size:10px;line-height:1.6;color:#9291aa;margin:0}
+.life-ending{margin-top:15px;padding:14px;border-radius:10px;background:rgba(227,155,155,.07);border:1px solid rgba(227,155,155,.2)}
+@media(max-width:700px){.life-hero-ending .life-ending-report{grid-template-columns:1fr;gap:12px}.life-hero-ending .ending-score{grid-row:auto;min-height:0;min-width:0;align-items:flex-start;padding:12px}.life-hero-ending .ending-score strong{font-size:32px}.life-hero-ending .ending-summary{grid-column:1}.life-hero-ending .ending-footnote{grid-column:1}.life-hero-ending .ending-title h2{font-size:23px}}
